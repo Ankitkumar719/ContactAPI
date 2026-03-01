@@ -8,7 +8,8 @@ const router = express.Router();
 
 // ----------------------------------------------------------------------------------------------------------
 
-router.post("/save", isAuthenticate, save);
+// router.post("/save", isAuthenticate, save);
+router.post("/save", save);
 router.get("/getAllContacts", getContacts);
 router.get("/:id", getContactById);
 router.put("/:id", updateContactById);

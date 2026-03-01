@@ -5,35 +5,26 @@ import { Contact } from "../model/Contact.js";
 // API - /api/contact/save
 
 export const save = async (req, res) => {
+  try {
+    console.log("contactController.save body:", req.body);
+    const { name, email, mobile, bloodgroup } = req.body; // take data from body
 
-  const { name, email, mobile, bloodgroup } = req.body; // take data from body
-
-  if (name == "" || email == "" || mobile == "" || bloodgroup == "") {
-
-    res.json({ message: "All Field Required", status: false }); // validation
-
-  } else {
+    if (!name || !email || !mobile || !bloodgroup) {
+      return res.status(400).json({ message: "All Field Required", status: false }); // validation
+    }
 
     let checkData = await Contact.findOne({ email }); // check email in db
 
     if (!checkData) {
-
-      let contact = await Contact.create({ name, email, mobile, bloodgroup, });
-
-      res.json({
-        message: "Contact Save Successfully",
-        contact,
-        staus: true,
-      });
-
+      let contact = await Contact.create({ name, email, mobile, bloodgroup });
+      return res.json({ message: "Contact Save Successfully", contact, status: true });
     } else {
-
-      res.json({ message: "Contact Already Exists", status: false });
-
+      return res.status(409).json({ message: "Contact Already Exists", status: false });
     }
+  } catch (err) {
+    console.error("Error in save():", err);
+    return res.status(500).json({ message: "Server error", status: false, error: err.message });
   }
-
-  res.json({ message: "Its working" });
 };
 
 // ----------------------------------------------------------------------------------------------------------
